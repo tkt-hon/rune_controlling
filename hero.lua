@@ -9,7 +9,11 @@ local function IsRuneUp(teambot)
 end
 M.IsRuneUp = IsRuneUp
 
-local function PickRune(bot, unit, teambot)
+local function PickRune(bot, unit, teambot, action, distance)
+  action = action or function(rune)
+    bot:OrderEntity(unit, "Touch", rune)
+  end
+  distance = distance or 100
   local runeData = teambot.data.rune
   local runeLocation = runeData:GetRuneLocation()
   if traveling then
@@ -18,8 +22,8 @@ local function PickRune(bot, unit, teambot)
       bot:OrderPosition(unit, "Move", runeLocation)
       return
     end
-    if Vector3.Distance2D(unit:GetPosition(), runeLocation) <= 100 then
-      bot:OrderEntity(unit, "Touch", runeData:GetRuneEntity())
+    if Vector3.Distance2D(unit:GetPosition(), runeLocation) <= distance then
+      action(runeData:GetRuneEntity())
       traveling = false
     end
   else
