@@ -8,7 +8,7 @@ Clone this repository under Hon/game/bots with name you want.
 
 To use rune locator, make your teambot load ```Utils_RuneControlling_Team``` and rune Initialize-function in it by giving your teambot as a parameter.
 
-    Utils_RuneControlling_Team:Initialize(object) -- object is the teambot object
+    Utils_RuneControlling_Team.Initialize(object) -- object is the teambot object
 
 To locate rune call Locate-function of rune data in onthink to update state of locator.
 
