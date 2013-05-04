@@ -4,20 +4,22 @@ This utility has two main points, locating rune and picking rune.
 
 ## Installing
 
-Clone this repository under Hon/game/bots with name you want.
+Clone this repository under Hon/game/bots/lib with name ```rune_controlling```.
 
-To use rune locator, make your teambot load ```Utils_RuneControlling_Team``` and rune Initialize-function in it by giving your teambot as a parameter.
+To use rune locator, make your teambot run file ```bots/lib/rune_controlling/init_team.lua```, which initializes the rune controlling for the team.
 
-    Utils_RuneControlling_Team.Initialize(object) -- object is the teambot object
+    runfile 'bots/lib/rune_controlling/init_team.lua'
 
-To locate rune call Locate-function of rune data in onthink to update state of locator.
+To pick runes, make your hero as a rune picker by running file ```bots/lib/rune_controlling/init.lua```.
 
-    object.data.rune:Locate() -- object is teambot object
+    runfile 'bots/lib/rune_controlling/init_team.lua'
 
-To pick runes, make your hero as a rune picker by loading ```Utils_RuneControlling_Hero``` and checking the state with following methods:
+## Customizing
 
-    -- Check if rune is ready to pick:
-    Utils_RuneControlling_Hero.IsRuneUp(teamBrain) -- teamBrain is teambot object
+To customize rune picking, you can edit following functions:
 
-    -- Make your unit to pick rune:
-    Utils_RuneControlling_Hero.PickRune(object, unit, teamBrain) -- object is hero bot object, unit is hero or other unit, teamBrain is teambot object
+    Vector3 behaviorLib.RuneControlling.GetRuneLocation(botBrain, tLocations)
+    boolean behaviorLib.RuneControlling.GetRuneAction(botBrain, unitPicker, powerupRune)
+    unit    behaviorLib.RuneControlling.GetRunePicker(botBrain)
+
+You can also use the utils without package behavior.
