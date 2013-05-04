@@ -1,5 +1,7 @@
 local _G = getfenv(0)
 
+local tinsert = _G.table.insert
+
 local M = {}
 
 local RUNE_MASK = 0x0000008 + 0x0000020
@@ -40,17 +42,13 @@ end
 local function AnalyzeRuneSpots(runeData)
   if HoN.CanSeePosition(RUNE_TOP) then
     local rune = GetRuneInSpot(RUNE_TOP)
-    if rune then
-      runeData.runeBot = false
-    else
+    if not rune then
       runeData.runeTop = false
     end
   end
   if HoN.CanSeePosition(RUNE_BOTTOM) then
     local rune = GetRuneInSpot(RUNE_BOTTOM)
-    if rune then
-      runeData.runeTop = false
-    else
+    if not rune then
       runeData.runeBot = false
     end
   end
@@ -61,20 +59,25 @@ local function CanPickRune(runeData)
 end
 
 local function GetRuneLocation(runeData)
+  local locations = {}
   if runeData.runeTop then
-    return RUNE_TOP
-  elseif runeData.runeBot then
-    return RUNE_BOTTOM
+    tinsert(locations, RUNE_TOP)
   end
-  return nil
+  if runeData.runeBot then
+    tinsert(locations, RUNE_BOTTOM)
+  end
+  return locations
 end
 
 local function GetRuneEntity(runeData)
+  local entities = {}
   if runeData.runeTop and HoN.CanSeePosition(RUNE_TOP) then
-    return GetRuneInSpot(RUNE_TOP)
-  elseif runeData.runeBot and HoN.CanSeePosition(RUNE_BOTTOM) then
-    return GetRuneInSpot(RUNE_BOTTOM)
+    tinsert(entities, GetRuneInSpot(RUNE_TOP))
   end
+  if runeData.runeBot and HoN.CanSeePosition(RUNE_BOTTOM) then
+    tinsert(entities, GetRuneInSpot(RUNE_BOTTOM))
+  end
+  return entities
 end
 
 local function Locate(runeData)
@@ -96,14 +99,16 @@ local function DeclareFunctions(runeData)
   runeData.Locate = Locate
 end
 
-local function Initialize(teambot)
-  if not (teambot.data and teambot.data.rune) then
-    teambot.data = teambot.data or {}
-    teambot.data.rune = {}
-    DeclareFunctions(teambot.data.rune)
-    teambot.data.rune:ResetRune()
+local function Initialize(object)
+  if not (object.data and object.data.rune) then
+    object.data = object.data or {}
+    local data = object.data
+    data.rune = {}
+    local runeData = data.rune
+    DeclareFunctions(runeData)
+    runeData:ResetRune()
   end
 end
 M.Initialize = Initialize
 
-Utils_RuneControlling_Team = M
+RuneControlling_Utils_Team = M
